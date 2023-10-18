@@ -123,6 +123,12 @@ async function renderResult() {
 
   camera.drawCtx();
 
+  console.log(camera)
+
+
+  //run detection here
+
+
   // The null check makes sure the UI is not in the middle of changing to a
   // different model. If during model change, the result is from an old model,
   // which shouldn't be rendered.
@@ -151,6 +157,8 @@ async function app() {
   stats = setupStats();
 
   camera = await Camera.setupCamera(STATE.camera);
+
+  // console.log(camera) // new
 
   await setBackendAndEnvFlags(STATE.flags, STATE.backend);
 
