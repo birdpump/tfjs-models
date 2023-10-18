@@ -150,6 +150,33 @@ async function renderPrediction() {
   rafId = requestAnimationFrame(renderPrediction);
 };
 
+
+
+/////////////////////// my code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////// end my code
+
 async function app() {
   // Gui content will change depending on which model is in the query string.
   const urlParams = new URLSearchParams(window.location.search);
