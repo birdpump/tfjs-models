@@ -123,7 +123,9 @@ async function renderResult() {
 
   camera.drawCtx();
 
-  console.log(camera)
+  console.log(camera);
+
+  // console.log(Camera);
 
 
   //run detection here
