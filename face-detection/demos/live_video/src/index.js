@@ -183,21 +183,34 @@ async function app() {
 
 ////////////////my code start
 // PID Control Parameters (Adjust as needed)
+let inset = 50;
+let offset = 70;
+let movey = false;
+let movex = false;
+
+// Smoothing Parameters
+const smoothingFactor = 0.2; // Adjust as needed
+let smoothedFaceCenterX = 0;
+let smoothedFaceCenterY = 0;
+
+// PID Control Parameters (Adjust as needed)
 const kP = 0.1;
 const kI = 0.0;
 const kD = 0.0;
 let errorXIntegral = 0;
 let errorYIntegral = 0;
-let lastErrorX = 0;
-let lastErrorY = 0;
 
 function moveCamera(faceCenterX, faceCenterY) {
+  // Implement smoothing
+  smoothedFaceCenterX = (1 - smoothingFactor) * smoothedFaceCenterX + smoothingFactor * faceCenterX;
+  smoothedFaceCenterY = (1 - smoothingFactor) * smoothedFaceCenterY + smoothingFactor * faceCenterY;
+
   let xcen = 640 / 2;
   let ycen = 480 / 2;
 
   // Calculate error for PID control
-  const errorX = faceCenterX - xcen;
-  const errorY = faceCenterY - ycen;
+  const errorX = smoothedFaceCenterX - xcen;
+  const errorY = smoothedFaceCenterY - ycen;
 
   // Implement PID control for X and Y axes
   const controlX = kP * errorX + kI * errorXIntegral + kD * (errorX - lastErrorX);
@@ -214,7 +227,7 @@ function moveCamera(faceCenterX, faceCenterY) {
   // Move the camera based on the PID control
   sendDegrees(controlX, controlY);
 
-  // Adjust movey and movex based on bounding box
+  // Update movey and movex based on bounding box
   movey = Math.abs(errorY) > inset;
   movex = Math.abs(errorX) > inset;
 
