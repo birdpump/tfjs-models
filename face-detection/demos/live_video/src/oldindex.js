@@ -1,3 +1,4 @@
+//copy pasted from most recent code
 /**
  * @license
  * Copyright 2022 Google LLC. All Rights Reserved.
@@ -182,49 +183,60 @@ async function app() {
 
 
 ////////////////my code start
-// PID Control Parameters (Adjust as needed)
-const kP = 0.1;
-const kI = 0.0;
-const kD = 0.0;
-let errorXIntegral = 0;
-let errorYIntegral = 0;
-let lastErrorX = 0;
-let lastErrorY = 0;
+let inset = 50
+let offset = 70
+
+// let inset = 40
+// let offset = 80
+
+let movey = false;
+let movex = false;
 
 function moveCamera(faceCenterX, faceCenterY) {
-  let xcen = 640 / 2;
-  let ycen = 480 / 2;
+  let xcen = 640 / 2
+  let ycen = 480 / 2
+  if (movey) {
+    // up axis
+    if (faceCenterY < ycen) {
+      sendDegrees(0, -1)
+    }
 
-  // Calculate error for PID control
-  const errorX = faceCenterX - xcen;
-  const errorY = faceCenterY - ycen;
-
-  // Implement PID control for X and Y axes
-  const controlX = kP * errorX + kI * errorXIntegral + kD * (errorX - lastErrorX);
-  const controlY = kP * errorY + kI * errorYIntegral + kD * (errorY - lastErrorY);
-
-  // Update error integrals
-  errorXIntegral += errorX;
-  errorYIntegral += errorY;
-
-  // Store errors for the next iteration
-  lastErrorX = errorX;
-  lastErrorY = errorY;
-
-  // Move the camera based on the PID control
-  sendDegrees(controlX, controlY);
-
-  // Adjust movey and movex based on bounding box
-  movey = Math.abs(errorY) > inset;
-  movex = Math.abs(errorX) > inset;
-
-  // Reset movey and movex when within the bounding box
-  if (!movey) {
-    errorYIntegral = 0;
+    //down axis
+    if (faceCenterY > ycen) {
+      sendDegrees(0, 1)
+    }
   }
 
-  if (!movex) {
-    errorXIntegral = 0;
+  if (movex) {
+    //down axis
+    if (faceCenterX < xcen) {
+      sendDegrees(1, 0)
+    }
+
+    //down axis
+    if (faceCenterX > xcen) {
+      sendDegrees(-1, 0)
+    }
+  }
+
+
+  if (ycen - inset < faceCenterY && ycen + inset > faceCenterY) {
+    movey = false
+  }
+
+  if (xcen - inset < faceCenterX && xcen + inset > faceCenterX) {
+    movex = false
+  }
+
+
+  if (!movey && (ycen - offset > faceCenterY || ycen + offset < faceCenterY)) {
+    movey = true
+    // console.log("walla")
+  }
+
+  if (!movex && (xcen - offset > faceCenterX || xcen + offset < faceCenterX)) {
+    movex = true
+    // console.log("allah")
   }
 }
 
