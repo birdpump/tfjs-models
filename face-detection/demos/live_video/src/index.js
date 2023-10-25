@@ -331,7 +331,7 @@ export async function connect() {
 
 
 function sendDegrees(pan, tilt) {
-  console.log(`${pan}, ${tilt}`)
+  // console.log(`${pan}, ${tilt}`)
   if (!port || !port.writable) {
     console.error("Port is not open. Make sure to connect first.");
     return;
