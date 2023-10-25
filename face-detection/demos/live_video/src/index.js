@@ -192,36 +192,31 @@ async function app() {
 
 
 
-////////////////my code start
+//////////////// my code start
 let inset = 50;
 let offset = 70;
 let movey = false;
 let movex = false;
 
-// Smoothing Factor (Weight for the weighted average)
-const smoothingFactor = 0.5; // Adjust as needed
+const smoothingFactor = 0.5;
 
-// Previous position of the face
 let prevFaceCenterX = 0;
 let prevFaceCenterY = 0;
 
-// Define the desired update rate (in milliseconds)
-const updateRate = 20; // Adjust as needed (e.g., 20 milliseconds for 50 updates per second)
+const updateRate = 20; // 20mil
 
-// Timestamp to keep track of the last update
 let lastUpdateTimestamp = 0;
 
 function moveCamera(faceCenterX, faceCenterY) {
   const currentTime = Date.now();
 
-  // Check if enough time has passed since the last update
   if (currentTime - lastUpdateTimestamp >= updateRate) {
     lastUpdateTimestamp = currentTime;
 
     let xcen = 640 / 2;
     let ycen = 480 / 2;
 
-    // Apply smoothing to face position
+    // smoothing
     const smoothedFaceCenterX = (1 - smoothingFactor) * prevFaceCenterX + smoothingFactor * faceCenterX;
     const smoothedFaceCenterY = (1 - smoothingFactor) * prevFaceCenterY + smoothingFactor * faceCenterY;
 
@@ -259,24 +254,16 @@ function moveCamera(faceCenterX, faceCenterY) {
 
     if (!movey && (ycen - offset > smoothedFaceCenterY || ycen + offset < smoothedFaceCenterY)) {
       movey = true;
-      // console.log("walla")
     }
 
     if (!movex && (xcen - offset > smoothedFaceCenterX || xcen + offset < smoothedFaceCenterX)) {
       movex = true;
-      // console.log("allah")
     }
 
-    // Store the current face position for the next iteration
     prevFaceCenterX = smoothedFaceCenterX;
     prevFaceCenterY = smoothedFaceCenterY;
   }
 }
-
-
-
-// Example usage:
-// Let's assume the face is detected at
 
 
 let port;
