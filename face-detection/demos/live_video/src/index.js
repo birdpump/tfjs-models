@@ -213,8 +213,8 @@ function moveCamera(faceCenterX, faceCenterY) {
   if (currentTime - lastUpdateTimestamp >= updateRate) {
     lastUpdateTimestamp = currentTime;
 
-    let xcen = 640 / 2;
-    let ycen = 480 / 2;
+    let xcen = camera.video.width / 2;
+    let ycen = camera.video.height / 2;
 
     // smoothing
     const smoothedFaceCenterX = (1 - smoothingFactor) * prevFaceCenterX + smoothingFactor * faceCenterX;

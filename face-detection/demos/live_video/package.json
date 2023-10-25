@@ -16,6 +16,7 @@
     "@tensorflow/tfjs-backend-webgpu": "^0.0.1-alpha.19",
     "@tensorflow/tfjs-converter": "^4.4.0",
     "@tensorflow/tfjs-core": "^4.4.0",
+    "deasync": "^0.1.29",
     "scatter-gl": "0.0.8"
   },
   "scripts": {

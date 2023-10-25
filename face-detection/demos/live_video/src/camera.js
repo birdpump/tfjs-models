@@ -18,6 +18,7 @@
 import {VIDEO_SIZE} from './shared/params';
 import {drawResults, isMobile} from './shared/util';
 
+
 export class Camera {
   constructor() {
     this.video = document.getElementById('video');
@@ -86,18 +87,8 @@ export class Camera {
     this.ctx.drawImage(
         this.video, 0, 0, this.video.videoWidth, this.video.videoHeight);
 
-    // Calculate the coordinates for the center of the canvas
-    const centerX = this.canvas.width / 2;
-    const centerY = this.canvas.height / 2;
 
-    // Calculate the coordinates for the top-left corner of the square
-    const squareSize = 20; // Size of the square
-    const squareX = centerX - squareSize / 2;
-    const squareY = centerY - squareSize / 2;
 
-    // Draw a 20px x 20px square in the center of the canvas
-    this.ctx.fillStyle = 'red'; // Set the square's fill color
-    this.ctx.fillRect(squareX, squareY, squareSize, squareSize);
   }
 
 
