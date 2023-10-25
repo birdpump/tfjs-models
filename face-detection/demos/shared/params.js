@@ -36,8 +36,8 @@ export const STATE = {
 export const MEDIAPIPE_FACE_CONFIG = {
   maxFaces: 1,
   boundingBox: true,
-  keypoints: true,
-  modelType: 'short'
+  keypoints: false,
+  modelType: 'full'
 };
 
 export async function createDetector() {

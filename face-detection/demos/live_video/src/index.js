@@ -1,3 +1,4 @@
+//copy pasted from most recent code
 /**
  * @license
  * Copyright 2022 Google LLC. All Rights Reserved.
@@ -35,6 +36,12 @@ let detector, camera, stats;
 let startInferenceTime, numInferences = 0;
 let inferenceTimeSum = 0, lastPanelUpdate = 0;
 let rafId;
+
+
+
+//TODO myvars
+let kill = true
+
 
 async function checkGuiUpdate() {
   if (STATE.isTargetFPSChanged || STATE.isSizeOptionChanged) {
@@ -123,10 +130,14 @@ async function renderResult() {
 
 
   try {
-    let faceX = faces[0].keypoints[0].x
-    let faceY = faces[0].keypoints[0].y
-    moveCamera(faceX, faceY)
-    // console.log(faceX)
+    // let faceX = faces[0].keypoints[0].x
+    // let faceY = faces[0].keypoints[0].y
+    let faceX = (faces[0].box.xMin) + (faces[0].box.width / 2)
+    let faceY = (faces[0].box.yMin) + (faces[0].box.height / 2)
+    if(!kill) moveCamera(faceX, faceY);
+    // console.log(faces[0])
+
+
 
   } catch (error) {
     console.log(error)
@@ -182,62 +193,83 @@ async function app() {
 
 
 ////////////////my code start
-// PID Control Parameters (Adjust as needed)
 let inset = 50;
 let offset = 70;
 let movey = false;
 let movex = false;
 
-// Smoothing Parameters
-const smoothingFactor = 0.2; // Adjust as needed
-let smoothedFaceCenterX = 0;
-let smoothedFaceCenterY = 0;
+// Smoothing Factor (Weight for the weighted average)
+const smoothingFactor = 0.5; // Adjust as needed
 
-// PID Control Parameters (Adjust as needed)
-const kP = 0.1;
-const kI = 0.0;
-const kD = 0.0;
-let errorXIntegral = 0;
-let errorYIntegral = 0;
+// Previous position of the face
+let prevFaceCenterX = 0;
+let prevFaceCenterY = 0;
+
+// Define the desired update rate (in milliseconds)
+const updateRate = 20; // Adjust as needed (e.g., 20 milliseconds for 50 updates per second)
+
+// Timestamp to keep track of the last update
+let lastUpdateTimestamp = 0;
 
 function moveCamera(faceCenterX, faceCenterY) {
-  // Implement smoothing
-  smoothedFaceCenterX = (1 - smoothingFactor) * smoothedFaceCenterX + smoothingFactor * faceCenterX;
-  smoothedFaceCenterY = (1 - smoothingFactor) * smoothedFaceCenterY + smoothingFactor * faceCenterY;
+  const currentTime = Date.now();
 
-  let xcen = 640 / 2;
-  let ycen = 480 / 2;
+  // Check if enough time has passed since the last update
+  if (currentTime - lastUpdateTimestamp >= updateRate) {
+    lastUpdateTimestamp = currentTime;
 
-  // Calculate error for PID control
-  const errorX = smoothedFaceCenterX - xcen;
-  const errorY = smoothedFaceCenterY - ycen;
+    let xcen = 640 / 2;
+    let ycen = 480 / 2;
 
-  // Implement PID control for X and Y axes
-  const controlX = kP * errorX + kI * errorXIntegral + kD * (errorX - lastErrorX);
-  const controlY = kP * errorY + kI * errorYIntegral + kD * (errorY - lastErrorY);
+    // Apply smoothing to face position
+    const smoothedFaceCenterX = (1 - smoothingFactor) * prevFaceCenterX + smoothingFactor * faceCenterX;
+    const smoothedFaceCenterY = (1 - smoothingFactor) * prevFaceCenterY + smoothingFactor * faceCenterY;
 
-  // Update error integrals
-  errorXIntegral += errorX;
-  errorYIntegral += errorY;
+    if (movey) {
+      // up axis
+      if (smoothedFaceCenterY < ycen) {
+        sendDegrees(0, -1);
+      }
 
-  // Store errors for the next iteration
-  lastErrorX = errorX;
-  lastErrorY = errorY;
+      // down axis
+      if (smoothedFaceCenterY > ycen) {
+        sendDegrees(0, 1);
+      }
+    }
 
-  // Move the camera based on the PID control
-  sendDegrees(controlX, controlY);
+    if (movex) {
+      // right axis
+      if (smoothedFaceCenterX < xcen) {
+        sendDegrees(1, 0);
+      }
 
-  // Update movey and movex based on bounding box
-  movey = Math.abs(errorY) > inset;
-  movex = Math.abs(errorX) > inset;
+      // left axis
+      if (smoothedFaceCenterX > xcen) {
+        sendDegrees(-1, 0);
+      }
+    }
 
-  // Reset movey and movex when within the bounding box
-  if (!movey) {
-    errorYIntegral = 0;
-  }
+    if (ycen - inset < smoothedFaceCenterY && ycen + inset > smoothedFaceCenterY) {
+      movey = false;
+    }
 
-  if (!movex) {
-    errorXIntegral = 0;
+    if (xcen - inset < smoothedFaceCenterX && xcen + inset > smoothedFaceCenterX) {
+      movex = false;
+    }
+
+    if (!movey && (ycen - offset > smoothedFaceCenterY || ycen + offset < smoothedFaceCenterY)) {
+      movey = true;
+      // console.log("walla")
+    }
+
+    if (!movex && (xcen - offset > smoothedFaceCenterX || xcen + offset < smoothedFaceCenterX)) {
+      movex = true;
+      // console.log("allah")
+    }
+
+    // Store the current face position for the next iteration
+    prevFaceCenterX = smoothedFaceCenterX;
+    prevFaceCenterY = smoothedFaceCenterY;
   }
 }
 
@@ -254,6 +286,37 @@ const button = document.getElementById('myButton');
 button.addEventListener('click', function () {
   connect();
 });
+
+const killbtn = document.getElementById('killButton');
+
+// Add a click event listener to the button
+killbtn.addEventListener('click', function () {
+  if(kill){
+    kill = false
+    killbtn.style.backgroundColor = "green"
+  }else{
+    kill = true
+    killbtn.style.backgroundColor = "red"
+  }
+});
+
+// const resetbtn = document.getElementById('resetButton');
+
+// // Add a click event listener to the button
+// resetbtn.addEventListener('click', function () {
+//   if (!port || !port.writable) {
+//     console.error("Port is not open. Make sure to connect first.");
+//     return;
+//   }
+
+//   const data = `<reset>`; // Wrapping data in < and >
+//   const encoder = new TextEncoder();
+//   const encoded = encoder.encode(data);
+
+//   const writer = port.writable.getWriter();
+//   writer.write(encoded).catch(err => console.error('Error writing to port:', err));
+//   writer.releaseLock();
+// });
 
 
 export async function connect() {

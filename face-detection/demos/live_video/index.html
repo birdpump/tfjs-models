@@ -21,33 +21,71 @@ limitations under the License.
     }
 
     #stats {
-      position: relative;
+      /* position: relative;
       width: 100%;
-      height: 80px;
+      height: 80px; */
     }
 
     #main {
-      position: relative;
-      margin: 0;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      height: 100Vh;
+      width: 100vw;
+      background-color: white;
+      overflow: hidden;
+      /* or overflow: auto; */
+    }
+
+    .container{
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 1);
     }
 
     #canvas-wrapper {
-      position: relative;
+      /* position: relative; */
+      box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #video {
+      margin: 0;
+      box-sizing: border-box;
+      box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .top{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      height: 90px;
+      box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
+      margin-bottom: 15px;
+    }
+
+    button{
+      background-color: grey;
+      border: 2px solid black;
+      padding: 5px;
+      margin: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
 
+
+
 <body>
-  <button id="myButton">Connect to Arduino</button><br>
-<input type="range" id="xValues" min="0" max="180" value="90" oninput="updateValue(this.value)">
-<input type="range" id="yValues" min="0" max="180" value="90" oninput="updateValue2(this.value)">
-<h2>Coordinates</h2>
-<p>X: <span id="xValue">0</span></p>
-<p>Y: <span id="yValue">0</span></p>
-
-
-  <div id="stats"></div>
   <div id="main">
+    <div class="top">
+      <!-- <button id="resetButton">reset gimbal pos</button> -->
+      <button id="myButton">Connect to Arduino</button>
+      <button id="killButton" style="background-color: red;">shut it off!!!!</button>
+      <div id="stats"></div>
+    </div>
+
+
+
+
     <div class="container">
       <div class="canvas-wrapper">
         <canvas id="output"></canvas>
@@ -61,8 +99,8 @@ limitations under the License.
         </video>
       </div>
     </div>
-  </div>
-  </div>
+
+
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r16/Stats.min.js"></script>
