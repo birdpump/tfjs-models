@@ -143,12 +143,6 @@ async function renderResult() {
     console.log(error)
   }
 
-  // console.log(Camera)
-
-
-
-
-
 
 
   camera.drawCtx();

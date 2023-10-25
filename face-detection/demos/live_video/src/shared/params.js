@@ -19,12 +19,13 @@ import * as faceDetection from '@tensorflow-models/face-detection';
 
 export const NUM_KEYPOINTS = 6;
 export const GREEN = '#32EEDB';
-export const RED = '#FF2C35';
+export const RED = '#02efdf';
 export const BLUE = '#157AB3';
 
 export const VIDEO_SIZE = {
   '640 X 480': {width: 640, height: 480},
   '1280 X 720': {width: 1280, height: 720},
+  '1920 X 1080': {width: 1920, height: 1080},
   '360 X 270': {width: 360, height: 270}
 };
 export const STATE = {
