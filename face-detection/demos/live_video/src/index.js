@@ -188,7 +188,7 @@ async function app() {
 
 //////////////// my code start
 let inset = 50;
-let offset = 70;
+let offset = 60;
 let movey = false;
 let movex = false;
 
@@ -197,7 +197,7 @@ const smoothingFactor = 0.5;
 let prevFaceCenterX = 0;
 let prevFaceCenterY = 0;
 
-const updateRate = 20; // 20mil
+const updateRate = 30; // 20mil
 
 let lastUpdateTimestamp = 0;
 
@@ -281,23 +281,23 @@ killbtn.addEventListener('click', function () {
   }
 });
 
-// const resetbtn = document.getElementById('resetButton');
+const resetbtn = document.getElementById('centerButton');
 
-// // Add a click event listener to the button
-// resetbtn.addEventListener('click', function () {
-//   if (!port || !port.writable) {
-//     console.error("Port is not open. Make sure to connect first.");
-//     return;
-//   }
+// Add a click event listener to the button
+resetbtn.addEventListener('click', function () {
+  if (!port || !port.writable) {
+    console.error("Port is not open. Make sure to connect first.");
+    return;
+  }
 
-//   const data = `<reset>`; // Wrapping data in < and >
-//   const encoder = new TextEncoder();
-//   const encoded = encoder.encode(data);
+  const data = `<P100T100>`; // Wrapping data in < and >
+  const encoder = new TextEncoder();
+  const encoded = encoder.encode(data);
 
-//   const writer = port.writable.getWriter();
-//   writer.write(encoded).catch(err => console.error('Error writing to port:', err));
-//   writer.releaseLock();
-// });
+  const writer = port.writable.getWriter();
+  writer.write(encoded).catch(err => console.error('Error writing to port:', err));
+  writer.releaseLock();
+});
 
 
 export async function connect() {
