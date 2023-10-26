@@ -141,6 +141,7 @@ async function renderResult() {
 
   } catch (error) {
     console.log(error)
+    
   }
 
 
